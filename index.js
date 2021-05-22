@@ -35,20 +35,21 @@ app.post("/api/event", async function(req, res) {
     try {
         let sql = ""
         // get from the request  json data
-
         // id = id of user
         // type = date or cerca
         // data = cerca string or date string
         // table = repair or perizie
         const { body: { id, type = "date", data, table = "repair" } } = req
 
-        if(table == "repair" || !type == "date" ) {
+        // if you are searching for repair
+        if(table == "repair") {
             sql= `SELECT Incarichi.ID,'R' as tipo,
             DATE_FORMAT(Incarichi.Data_appuntamento, '%d-%m-%y''.%H-%i') as Appuntamento,
             DATE_FORMAT(Incarichi.Data_appuntamento, '%H-%i') as ora, 
             Targa,Modello, Intestatario,insured_party.company_name ,
             repairyards.RagioneSociale as Carrozzeria,NomeCompleto,  
-            statuses.code as codicestato,statuses.description as descstato, 
+            statuses.code as codicestato,
+            statuses.description as descstato, 
             a_condizione_r as condizione ,cliente_id, 
             Get_NumDocs(Get_id_profiloPratica( Incarichi.ID, cliente_id), 
             Incarichi.ID,'R') as numdocumenti,tel1_cantiere as telCarrozzeria,
@@ -60,10 +61,27 @@ app.post("/api/event", async function(req, res) {
             LEFT JOIN repairyards on repairyards.ID = Incarichi.repairyard_id
             WHERE a_condizione_r in ('A','D','V')  AND Incarichi.IDoperatore  = ${id}`
         }
-  
-        if(!type == "date" || table == "perizie") {
-            // fix me 
-            sql = `${sql} `
+
+        // if you are searching for perizie
+        if(table == "perizie") {
+            sql = `SELECT Incarichi.ID,'R' as tipo,
+            DATE_FORMAT(carrozzeria_perizia.dataappuntamento_perizia, '%d-%m-%y''.%H-%i') as Appuntamento,
+            DATE_FORMAT(carrozzeria_perizia.dataappuntamento_perizia, '%H-%i') as ora, T
+            arga,Modello, Intestatario,insured_party.company_name ,
+            repairyards.RagioneSociale as Carrozzeria,NomeCompleto,  
+            statuses.code as codicestato,
+            statuses.description as descstato, 
+            a_condizione_p as condizione ,cliente_id, 
+            Get_NumDocs(Get_id_profiloPratica( Incarichi.ID, cliente_id), Incarichi.ID,'P') as numdocumenti,
+            tel1_cantiere as telCarrozzeria,
+            latitude,longitude,Incarichi.IDoperatore 
+            FROM  carrozzeria_perizia
+            LEFT JOIN Incarichi ON Incarichi.ID = carrozzeria_perizia.incarchi_id
+            LEFT JOIN insured_party ON insured_party.ID = cliente_id
+            LEFT JOIN statuses ON statuses.ID = Incarichi.status_inspection
+            LEFT JOIN repairyards ON repairyards.ID = carrozzeria_perizia.repaiyard_id_perizia
+            LEFT JOIN LogIn AS operatoriperizia ON     operatoriperizia.ID = carrozzeria_perizia.idOperatore_perizia
+            WHERE   a_condizione_p in  ('A','D','V')  AND Incarichi.IDoperatore  = ${id}`
         }
         
         if(type == "date") {
@@ -71,12 +89,12 @@ app.post("/api/event", async function(req, res) {
         }
         else {
             sql = `${sql} AND (
-                Targa LIKE '%" ${data}"%' 
-                OR Modello LIKE '%"${data}"%' 
-                OR Intestatario LIKE '%"${data}"%' 
-                OR insured_party.company_name LIKE '%"${data}"%' 
-                OR repairyards.RagioneSociale LIKE '%"${data}"%'     
-                OR NomeCompleto LIKE '%"${data}"%'
+                Targa LIKE '% ${data}%' 
+                OR Modello LIKE '%${data}%' 
+                OR Intestatario LIKE '%${data}%' 
+                OR insured_party.company_name LIKE '%${data}%' 
+                OR repairyards.RagioneSociale LIKE '%${data}%'     
+                OR NomeCompleto LIKE '%${data}%'
             )`
         }
         // create connection with db
