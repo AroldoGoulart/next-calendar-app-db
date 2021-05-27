@@ -31,6 +31,11 @@ app.post("/api/login", async function(req, res) {
     
 });
 
+// app.get or post create route to frontend get data
+app.get("/api/test", async function(req, res) {
+        res.json({ error: "all right, test is success, just change the port to public" })
+});
+
 app.post("/api/allEvent", async function(req, res) {
     const { body: { data } } = req
 
