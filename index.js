@@ -279,7 +279,6 @@ app.post("/api/listDocument", async function (req, res) {
                res.json({ message: 'nothing found' })
             }
         }
-
         await con.query(sql, (errDB, resDB, tablesDB ) => afterExec(errDB, resDB, tablesDB ))
     }   
     catch(e) {
