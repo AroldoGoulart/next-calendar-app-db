@@ -9,9 +9,10 @@ function connect () {
         database : 'nsg_grandine',
         port: 3306,
         insecureAuth: true,
-        ssl: {
-            rejectUnauthorized: false
-        }
+        /* ssl: {
+            rejectUnauthorized: false,
+            secureOptions: ""
+        } */
     });
 
     return connection
