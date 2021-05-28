@@ -69,11 +69,13 @@ app.post("/api/allEvent", async function(req, res) {
         // if has any response, return it
         console.log(sql)
         if(resDB) {
+
             console.log("start where")
            // console.log(resDB)
             res.json({ ...resDB })
         }
         else {
+            console.log("not found", tablesDB, resDb, errDb)
            res.json({ message: 'nothing found' })
         }
     }
