@@ -14,8 +14,12 @@ app.post("/api/login", async function(req, res) {
         const con = connection.connect()
         console.log(sql)
         const afterExec = (errDB, resDB, tablesDB) => {
+            console.log("response", resDB)
+            console.log("tables", tablesDB)
+            console.log('errors', errDB)
+
             if(resDB) {
-                //console.log(resDB[0])
+                console.log(resDB)
                 res.json({ ...resDB[0] })
             }
             else {
