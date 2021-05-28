@@ -7,6 +7,7 @@ function connect () {
         user     : 'marketplus',
         password : 'agplus',
         database : 'nsg_grandine',
+        port: 3306,
         insecureAuth: true,
         ssl: {
             rejectUnauthorized: false
