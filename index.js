@@ -1,10 +1,22 @@
 const express = require('express');
+const fs = require('fs');
+const http = require('http');
+const https = require('https')
 const cors = require('cors');
 const app = express();
 const port = process.env.port || 5353;
-const connection = require("./src/connection")
+const connection = require("./src/connection");
 app.use(express.json());
 app.use(cors())
+
+// Certificate
+const privateKey = fs.readFileSync('/etc/letsencrypt/live/app.nonsolograndine.it/privkey.pem', 'utf8');
+const certificate = fs.readFileSync('/etc/letsencrypt/live/app.nonsolograndine.it/fullchain.pem', 'utf8');
+
+const credentials = {
+	key: privateKey,
+	cert: certificate,
+};
 
 // app.get or post create route to frontend get data
 app.post("/api/login", async function(req, res) {
@@ -297,9 +309,9 @@ app.post("/api/listDocument", async function (req, res) {
     }
 })
 
+// Starting both http & https servers
+const httpsServer = https.createServer(credentials, app);
 
-app.listen(port, function () {
-    const datetime = new Date();
-    const message = "Server runnning on Port:- " + port + "/Started at :- " + datetime;
-    console.log(message);
+httpsServer.listen(port, () => {
+	console.log('HTTPS Server running on port', port);
 });
