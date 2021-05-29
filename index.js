@@ -22,7 +22,7 @@ app.get('/', function (req, res) {
 })
 
 https.createServer(credentials, app)
-.listen(3000, function () {
+.listen(5353, function () {
   console.log('Example app listening on port 3000! Go to https://localhost:3000/')
 })
 
