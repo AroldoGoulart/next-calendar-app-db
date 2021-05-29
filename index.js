@@ -9,9 +9,9 @@ app.use(express.json());
 app.use(cors())
 
 // Certificate
-/* const privateKey = fs.readFileSync('/etc/letsencrypt/live/app.nonsolograndine.it/privkey.pem', 'utf8');
+const privateKey = fs.readFileSync('/etc/letsencrypt/live/app.nonsolograndine.it/privkey.pem', 'utf8');
 const certificate = fs.readFileSync('/etc/letsencrypt/live/app.nonsolograndine.it/fullchain.pem', 'utf8');
- */
+
 const credentials = {
 	key: privateKey,
 	cert: certificate,
@@ -311,8 +311,6 @@ app.post("/api/listDocument", async function (req, res) {
 app.use((req, res) => {
 	res.send('Hello there !');
 });
-
-
 
 var server = https.createServer(credentials,function (req, res) {
     res.writeHead(200, {'Content-Type': 'text/plain'});
