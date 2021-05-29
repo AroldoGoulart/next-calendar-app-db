@@ -312,12 +312,6 @@ app.use((req, res) => {
 	res.send('Hello there !');
 });
 
-
-
-var server = http.createServer(credentials,function (req, res) {
-    res.writeHead(200, {'Content-Type': 'text/plain'});
-    res.end('Hello World\n');
-  });
   
 // Starting both http & https servers
 const httpsServer = https.createServer(app);
